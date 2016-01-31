@@ -3,7 +3,7 @@
 # Released under MIT License.
 # Works with Python 2.7
 
-from urllib import urlopen, urlretrieve
+import urllib
 import os
 try:
 	from bs4 import BeautifulSoup
@@ -25,19 +25,19 @@ def main():
 	base_url = 'http://www.commitstrip.com/en/page/'
 
 	print 'Querying number of pages of comic strips'
-	initial = urlopen(base_url + '1').read()
+	initial = urllib.urlopen(base_url + '1').read()
 	pages = int(initial[initial.find('Page 1 of') + 9:initial.find('<', initial.find('Page 1 of'))].strip())
 	print 'Found ' + str(pages) + ' pages of Comic ...oops, Commit Strips'
 
 	for page in xrange(1, pages + 1):
 		print '\n###Downloading all comics listed on page ' + str(page) + '\n'
 		url = base_url + str(page)
-		soup = BeautifulSoup(urlopen(url).read())
+		soup = BeautifulSoup(urllib.urlopen(url).read())
 		excerpts = soup.select('.excerpt')
 		
 		for excerpt in excerpts:
 			strip_link = excerpt.a['href']
-			strip_soup = BeautifulSoup(urlopen(strip_link).read())
+			strip_soup = BeautifulSoup(urllib.urlopen(strip_link).read())
 			name = strip_soup.select('.entry-title')[0].string
 			name = name.replace(':', '-')
 			if name.endswith('.'): #Some names have '.' in the end and this messes with path names
@@ -47,7 +47,7 @@ def main():
 			if not os.path.exists(cwd + '/images/' + name):
 				print 'Downloading image - ' + name
 				try:
-					urlretrieve(img_url, cwd + '/images/' + name)
+					urllib.urlretrieve(img_url.encode('utf8'), cwd + '/images/' + name)
 				except:
 					print '\nERROR: The Image "' + name + '" could not be downloaded.\nPlease Visit ' + img_url + ' to download the image manually.\n'
 			else:
