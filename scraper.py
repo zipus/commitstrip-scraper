@@ -44,10 +44,11 @@ def main():
 				name = name[:-1]
 			name = ''.join(letter for letter in name if letter in '-_. abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789')  #Because some names contain characters not acceptable in path names
 			img_url = strip_soup.select('.entry-content')[0].img['src']
-			if not os.path.exists(cwd + '/images/' + name):
+			extension = os.path.splitext(img_url)[1]
+			if not os.path.exists(cwd + '/images/' + name+extension):
 				print 'Downloading image - ' + name
 				try:
-					urllib.urlretrieve(img_url.encode('utf8'), cwd + '/images/' + name)
+					urllib.urlretrieve(img_url.encode('utf8'), cwd + '/images/' + name+extension)
 				except:
 					print '\nERROR: The Image "' + name + '" could not be downloaded.\nPlease Visit ' + img_url + ' to download the image manually.\n'
 			else:
